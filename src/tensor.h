@@ -2,6 +2,7 @@
 
 #include <initializer_list>
 #include <array>
+#include <type_traits>
 
 enum DType {
     f16,
@@ -11,9 +12,12 @@ enum DType {
 template<
     typename T,
     int N, // number of rows
-    int M // number of columns
+    int M, // number of columns
+    DType foo = f32
 >
 class Tensor {
+
+    typedef typename std::conditional<foo == f32, float, int>::type dtype;
 
     public:
 
@@ -23,11 +27,10 @@ class Tensor {
         const int _N = N;
         const int _M = M;
 
-        DType dtype;
+        // DType dtype;
 
         Tensor(
-            std::initializer_list<T> items,
-            DType dtype = f32
+            std::initializer_list<dtype> items
         ) {
 
             // USAGE:
@@ -37,7 +40,7 @@ class Tensor {
             //     4, 5,
             // });
 
-            std::array<T, N * M>* buffer = new std::array<T, N * M>();
+            std::array<dtype, N * M>* buffer = new std::array<dtype, N * M>();
 
             int i = 0;
 
@@ -52,11 +55,9 @@ class Tensor {
         };
 
         Tensor(
-            std::array<T, N * M>* buffer,
-            DType dtype = f32
+            std::array<dtype, N * M>* buffer
         ) {
 
             this->buffer = buffer;
-            this->dtype = dtype;
         };
 };

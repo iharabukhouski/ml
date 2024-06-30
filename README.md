@@ -1,7 +1,7 @@
 - tensors
 - cpu backend
 - cuda backend
-- fp16
+- bf16
 - autograd
 
 

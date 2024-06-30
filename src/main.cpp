@@ -1,6 +1,6 @@
 #include <iostream>
 #include <array>
-#include <initializer_list>
+
 #include "logger.h"
 // #include "ml.h"
 #include "tensor.h"
@@ -8,7 +8,18 @@
 
 // a = relu(x @ W + b)
 
+// typedef float my_float;
+
+// void foo(std::bfloat16_t a) {
+
+//     std::cout << a;
+
+//     // return my_float;
+// };
+
 int main() {
+
+    // foo();
 
     Tensor<float, 2, 2> w = Tensor<float, 2, 2>({
         2, 3,
