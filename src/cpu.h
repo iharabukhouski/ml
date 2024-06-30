@@ -26,14 +26,12 @@ Tensor<T, n_rows, n_cols> randn() {
 
 template<typename T, int N, int M>
 Tensor<T, N, M> relu(
-    Tensor<T, N, M>& a
+    Tensor<T, N, M> a
 ) {
 
     std::array<T, N * M>* buffer = new std::array<T, N * M>();
 
     for (int i = 0; i < a.buffer->size(); i++) {
-
-        std::cout << a.buffer->at(i) << std::endl;
 
         // TODO: without this fails with "error: no matching function for call to 'max'"
         T zero = 0;
@@ -46,8 +44,8 @@ Tensor<T, N, M> relu(
 
 template<typename T, int N, int K, int M>
 Tensor<T, N, M> matmul(
-    Tensor<T, N, K>& a,
-    Tensor<T, K, M>& b
+    Tensor<T, N, K> a,
+    Tensor<T, K, M> b
 ) {
 
     std::array<T, N * M>* buffer = new std::array<T, N * M>();
@@ -76,8 +74,8 @@ Tensor<T, N, M> matmul(
 
 template<typename T, int N, int M>
 Tensor<T, N, M> add(
-    Tensor<T, N, M>& a,
-    Tensor<T, N, M>& b
+    Tensor<T, N, M> a,
+    Tensor<T, N, M> b
 ) {
 
     std::array<T, N * M>* buffer = new std::array<T, N * M>();
