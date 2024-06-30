@@ -1,3 +1,22 @@
+- tensors
+- cpu backend
+- cuda backend
+- fp16
+- autograd
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 - vocab size: 50257
 - sequence length: 1024
 - 125 M

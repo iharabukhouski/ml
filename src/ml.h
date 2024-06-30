@@ -1,15 +1,20 @@
 #pragma once
 
+#include <array>
 #include <random>
 #include <ctime>
 #include <string>
 #include <vector>
 
+// template<typename T, int n_rows, int n_cols>
 class Tensor {
 
     // private:
 
     public:
+
+        std::array<float, 3 * 2>* buffer;
+        // std::array<T, n_rows * n_cols>* _buffer;
 
         // std::vector<float> data;
         float data;
@@ -49,6 +54,10 @@ class Tensor {
             std::vector<Tensor*>* args
         );
 
+        Tensor(
+            std::array<float, 3 * 2>* buffer
+        );
+
         Tensor operator+(float _b);
 
         Tensor operator+(Tensor& b);
@@ -79,18 +88,18 @@ std::vector<Tensor*>* toposort(
     Tensor* a
 );
 
-template<typename T, int n_rows, int n_cols>
-std::array<T, n_rows * n_cols>* randn() {
+// template<typename T, int n_rows, int n_cols>
+// Tensor<T, n_rows, n_cols>* randn() {
 
-    std::array<T, n_rows * n_cols>* arr = new std::array<T, n_rows * n_cols>();
+//     std::array<T, n_rows * n_cols>* buffer = new std::array<T, n_rows * n_cols>();
 
-    std::default_random_engine generator(std::time(0));
-    std::normal_distribution<float> distribution(0, 1);
+//     std::default_random_engine generator(std::time(0));
+//     std::normal_distribution<T> distribution(0, 1);
 
-    for (int i = 0; i < n_rows * n_cols; i++) {
+//     for (int i = 0; i < n_rows * n_cols; i++) {
 
-        arr->at(i) = distribution(generator);
-    }
+//         buffer->at(i) = distribution(generator);
+//     }
 
-    return arr;
-};
+//     return Tensor(buffer);
+// };

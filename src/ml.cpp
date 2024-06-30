@@ -55,6 +55,17 @@ Tensor::Tensor(
     this->grad = 0;
 };
 
+Tensor::Tensor(
+    std::array<float, 3 * 2>* buffer
+) {
+
+    this->buffer = buffer;
+    this->data = NULL;
+    this->op = (char)NULL;
+    this->args = NULL;
+    this->grad = 0;
+}
+
 // Tensor Tensor::operator+(float _b) {
 
 //     std::vector<float> _data(data.size());
