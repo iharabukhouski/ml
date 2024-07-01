@@ -1,3 +1,14 @@
+todo (today):
+- autograd with matricies
+- optimizer step
+- zeros / ones / + / - / * / div / @
+- shape??? / broadcasting
+
+todo:
+- cuda backend
+- b16
+
+features:
 - tensors
 - cpu backend
 - cuda backend

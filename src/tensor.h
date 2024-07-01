@@ -2,35 +2,28 @@
 
 #include <initializer_list>
 #include <array>
-#include <type_traits>
-
-enum DType {
-    f16,
-    f32
-};
+#include "./backend/cpu/cpu2.h"
 
 template<
     typename T,
     int N, // number of rows
-    int M, // number of columns
-    DType foo = f32
+    int M // number of columns
 >
 class Tensor {
 
-    typedef typename std::conditional<foo == f32, float, int>::type dtype;
-
     public:
 
-        std::array<T, N * M>* buffer;
+        Buffer<T, N, M>* buffer;
+        Buffer<T, N, M>* grad;
 
-        // const auto dtype = T;
+        // op
+        // args
+
         const int _N = N;
         const int _M = M;
 
-        // DType dtype;
-
         Tensor(
-            std::initializer_list<dtype> items
+            std::initializer_list<T> items
         ) {
 
             // USAGE:
@@ -40,24 +33,46 @@ class Tensor {
             //     4, 5,
             // });
 
-            std::array<dtype, N * M>* buffer = new std::array<dtype, N * M>();
+            this->buffer = new Buffer<T, N, M>();
 
             int i = 0;
 
             for (int item : items) {
 
-                buffer->at(i) = item;
+                this->buffer->at(i) = item;
 
                 i++;
             }
 
-            this->buffer = buffer;
+            this->grad = new Buffer<T, N, M>();
         };
 
         Tensor(
-            std::array<dtype, N * M>* buffer
+            Buffer<T, N, M>* buffer
         ) {
 
             this->buffer = buffer;
+            this->grad = new Buffer<T, N, M>();
         };
+
+        Tensor<T, N, M> operator+(
+            Tensor<T, N, M> b
+        ) {
+
+            AddOp<T, N, M>* addOp = new AddOp<T, N, M>();
+
+            addOp->forward(
+                this->buffer,
+                b.buffer
+            );
+
+            return b;
+        };
+
+        static Tensor<T, N, M> randn() {
+
+            Buffer<T, N, M>* buffer = randn1<T, N, M>();
+
+            return Tensor(buffer);
+        }
 };

@@ -5,8 +5,8 @@
 #include <array>
 #include <random>
 #include <ctime>
-#include "logger.h"
-#include "tensor.h"
+#include "../../logger.h"
+#include "../../tensor.h"
 
 template<typename T, int n_rows, int n_cols>
 Tensor<T, n_rows, n_cols> randn() {
@@ -87,4 +87,3 @@ Tensor<T, N, M> add(
 
     return Tensor<T, N, M>(buffer);
 };
-

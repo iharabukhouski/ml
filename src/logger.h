@@ -17,7 +17,7 @@ void print(Tensor<T, N, M> a) {
 
         for (int m = 0; m < M; m++) {
 
-            std::cout << a.buffer->at(n * M + m) << ", ";
+            std::cout << a.buffer->ptr->at(n * M + m) << ", ";
         }
 
         std::cout << std::endl;

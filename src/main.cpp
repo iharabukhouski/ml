@@ -1,50 +1,45 @@
 #include <iostream>
 #include <array>
 
+#include "dtype.h"
 #include "logger.h"
 // #include "ml.h"
 #include "tensor.h"
-#include "cpu.h"
 
 // a = relu(x @ W + b)
 
-// typedef float my_float;
-
-// void foo(std::bfloat16_t a) {
-
-//     std::cout << a;
-
-//     // return my_float;
-// };
-
 int main() {
 
-    // foo();
+    Tensor<f32, 2, 1> a = Tensor<f32, 2, 1>::randn();
+    Tensor<f32, 2, 1> b = Tensor<f32, 2, 1>::randn();
+    Tensor<f32, 2, 1> c = a + b;
 
-    Tensor<float, 2, 2> w = Tensor<float, 2, 2>({
-        2, 3,
-        4, 5,
-    });
+    print(b);
 
-    // Tensor<float, 2, 2> w = randn<float, 2, 2>();
+    // Tensor<f32, 2, 2> w = Tensor<f32, 2, 2>({
+    //     2, 3,
+    //     4, 5,
+    // });
 
-    Tensor<float, 2, 1> b = Tensor<float, 2, 1>({
-        8,
-        9,
-    });
+    // // Tensor<f32, 2, 2> w = randn<f32, 2, 2>();
 
-    // Tensor<float, 2, 1> b = randn<float, 2, 1>();
+    // Tensor<f32, 2, 1> b = Tensor<f32, 2, 1>({
+    //     8,
+    //     9,
+    // });
 
-    Tensor<float, 2, 1> x = Tensor<float, 2, 1>({
-        6,
-        7,
-    });
+    // // Tensor<f32, 2, 1> b = randn<f32, 2, 1>();
 
-    // Tensor<float, 2, 1> x = randn<float, 2, 1>();
+    // Tensor<f32, 2, 1> x = Tensor<f32, 2, 1>({
+    //     6,
+    //     7,
+    // });
 
-    Tensor<float, 2, 1> a = relu(add(matmul(w, x), b));
+    // // Tensor<f32, 2, 1> x = randn<f32, 2, 1>();
 
-    print(a);
+    // Tensor<f32, 2, 1> a = relu(add(matmul(w, x), b));
+
+    // print(a);
 
 
 
