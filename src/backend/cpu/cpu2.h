@@ -12,9 +12,23 @@ class Buffer {
 
     // represents device buffer
 
+    private:
+
+        std::array<T, N * M>* _buffer = new std::array<T, N * M>();
+
     public:
 
-        std::array<T, N * M>* ptr = new std::array<T, N * M>();
+        T& at(
+            int i
+        ) {
+
+            return this->_buffer->at(i);
+        }
+
+        int size() {
+
+            return this->_buffer->size();
+        }
 
 };
 
@@ -36,36 +50,79 @@ class AddOp {
 
             Buffer<T, N, M>* buffer = new Buffer<T, N, M>();
 
-            for (int i = 0; i < a->ptr->size(); i++) {
+            for (int i = 0; i < N * M; i++) {
 
-                buffer->ptr->at(i) = a->ptr->at(i) + b->ptr->at(i);
+                buffer->at(i) = a->at(i) + b->at(i);
             }
 
             return buffer;
         }
 
-        Buffer<T, N, M> backward() {
+        std::array<Buffer<T, N, M>*, 2> backward(
+            Buffer<T, N, M>* grad
+        ) {
 
-            // TODO
+            return std::array<Buffer<T, N, M>*, 2>({
+                grad,
+                grad
+            });
         }
 };
 
-template<
-    typename T,
-    int N,
-    int M
->
-Buffer<T, N, M>* randn1() {
+namespace device {
 
-    Buffer<T, N, M>* buffer = new Buffer<T, N, M>();
+    template<
+        typename T,
+        int N,
+        int M
+    >
+    Buffer<T, N, M>* zeros() {
 
-    std::default_random_engine generator(std::time(0));
-    std::normal_distribution<T> distribution(0, 1);
+        Buffer<T, N, M>* buffer = new Buffer<T, N, M>();
 
-    for (int i = 0; i < N * M; i++) {
+        for (int i = 0; i < N * M; i++) {
 
-        buffer->ptr->at(i) = distribution(generator);
-    }
+            buffer->at(i) = 0;
+        }
 
-    return buffer;
-};
+        return buffer;
+    };
+
+    template<
+        typename T,
+        int N,
+        int M
+    >
+    Buffer<T, N, M>* ones() {
+
+        Buffer<T, N, M>* buffer = new Buffer<T, N, M>();
+
+        for (int i = 0; i < N * M; i++) {
+
+            buffer->at(i) = 1;
+        }
+
+        return buffer;
+    };
+
+    template<
+        typename T,
+        int N,
+        int M
+    >
+    Buffer<T, N, M>* randn() {
+
+        Buffer<T, N, M>* buffer = new Buffer<T, N, M>();
+
+        std::default_random_engine generator(std::time(0));
+        std::normal_distribution<T> distribution(0, 1);
+
+        for (int i = 0; i < N * M; i++) {
+
+            buffer->at(i) = distribution(generator);
+        }
+
+        return buffer;
+    };
+
+}

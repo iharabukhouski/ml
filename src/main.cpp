@@ -1,9 +1,8 @@
 #include <iostream>
 #include <array>
 
-#include "dtype.h"
 #include "logger.h"
-// #include "ml.h"
+#include "dtype.h"
 #include "tensor.h"
 
 // a = relu(x @ W + b)
@@ -14,7 +13,13 @@ int main() {
     Tensor<f32, 2, 1> b = Tensor<f32, 2, 1>::randn();
     Tensor<f32, 2, 1> c = a + b;
 
-    print(b);
+    // zero_grad(c);
+
+    backward(c);
+
+    // step(c);
+
+    print(c);
 
     // Tensor<f32, 2, 2> w = Tensor<f32, 2, 2>({
     //     2, 3,

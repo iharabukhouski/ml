@@ -1,4 +1,4 @@
-// #include <iostream>
+#include <iostream>
 // #include "tensor.h"
 
 // // void print(const char* a) {
@@ -6,10 +6,10 @@
 // //     std::cout << a << std::endl;
 // // }
 
-// // void print(int a) {
+void print2(int a) {
 
-// //     std::cout << a << std::endl;
-// // }
+    std::cout << a << std::endl;
+}
 
 // // void print(Tensor* a) {
 
