@@ -1,3 +1,36 @@
+# abstractions
+- tensor
+- buffer
+- op
+
+# ops
+- add
+- mul (hadamard product)
+- matmul
+- relu
+
+
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 todo (today):
 - autograd with matricies
 - optimizer step

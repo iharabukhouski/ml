@@ -10,8 +10,3 @@ void print2(int a) {
 
     std::cout << a << std::endl;
 }
-
-// // void print(Tensor* a) {
-
-// //     std::cout << a->__repr__() << std::endl;
-// // }

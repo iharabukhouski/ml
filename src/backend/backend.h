@@ -1,11 +1,5 @@
-#pragma once
+#include "./cpu/cpu.h"
+// #include "./cuda/cuda.h"
 
-#include "../op.h"
-
-class Backend {
-
-    public:
-
-        virtual Op add(Op a) = 0;
-
-};
+namespace backend = cpu;
+// namespace backend = cuda;
