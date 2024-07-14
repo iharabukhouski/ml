@@ -10,14 +10,30 @@
 
 # 	./build/main
 
-main: ./src/main.cpp
+# main: ./src/main.cpp
 
-	clear
+# 	clear
 
-	rm -rf ./build
+# 	rm -rf ./build
 
-	mkdir ./build
+# 	mkdir ./build
 
-	clang++ ./src/main.cpp -o ./build/main -std=c++20
+# 	clang++ ./src/main.cpp -o ./build/main -std=c++20
 
-	./build/main
+# 	./build/main
+
+all: program
+
+	./program
+
+program: main.o cuda.o
+
+	clang++ -L/usr/local/cuda-12/lib64 cuda.o main.o -o program -lcudart
+
+main.o: main.cpp
+
+	clang++ -c main.cpp
+
+cuda.o: cuda.cu
+
+	nvcc -c cuda.cu

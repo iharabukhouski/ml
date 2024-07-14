@@ -1,3 +1,13 @@
+# features
+- multidimentional tensors
+- autograd
+- cpu backend
+- cuda backend
+- bf16
+- optimizers
+  - sgd
+  - adam
+
 # abstractions
 - tensor
 - buffer
@@ -8,7 +18,7 @@
 - mul (hadamard product)
 - matmul
 - relu
-
+- transpose
 
 ---
 
@@ -40,13 +50,6 @@ todo (today):
 todo:
 - cuda backend
 - b16
-
-features:
-- tensors
-- cpu backend
-- cuda backend
-- bf16
-- autograd
 
 
 
