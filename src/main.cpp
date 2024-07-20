@@ -1,93 +1,102 @@
 #include <iostream>
 
-extern void add(
-    float *a,
-    float *b,
-    float *c,
-    int n
-);
+// extern void add(
+//     float *a,
+//     float *b,
+//     float *c,
+//     int n
+// );
 
-void vector_addition() {
+// void vector_addition() {
 
-    std::cout << "Program Start" << std::endl;
+//     std::cout << "Program Start" << std::endl;
 
-    int n = 64;
-    size_t bytes = n * sizeof(float);
+//     int n = 64;
+//     size_t bytes = n * sizeof(float);
 
-    float *a = (float *)malloc(bytes);
-    float *b = (float *)malloc(bytes);
-    float *c = (float *)malloc(bytes);
+//     float *a = (float *)malloc(bytes);
+//     float *b = (float *)malloc(bytes);
+//     float *c = (float *)malloc(bytes);
 
-    for (int i = 0; i < n; i++) {
+//     for (int i = 0; i < n; i++) {
 
-        a[i] = 1.0;
-        b[i] = 1.0;
-    }
+//         a[i] = 1.0;
+//         b[i] = 1.0;
+//     }
 
-    add(a, b, c, n);
+//     add(a, b, c, n);
 
-    for (int i = 0; i < n; i++) {
+//     for (int i = 0; i < n; i++) {
 
-        std::cout << c[i] << std::endl;
-    }
+//         std::cout << c[i] << std::endl;
+//     }
 
-    free(a);
-    free(b);
-    free(c);
+//     free(a);
+//     free(b);
+//     free(c);
 
-    std::cout << "Program End" << std::endl;
-}
+//     std::cout << "Program End" << std::endl;
+// }
 
-extern void transpose(
-    float *a,
-    float *b,
-    int N,
-    int M
-);
+// extern void transpose(
+//     float *a,
+//     float *b,
+//     int N,
+//     int M
+// );
 
-void matrix_transpose() {
+// void matrix_transpose() {
 
-    std::cout << "Program Start" << std::endl;
+//     std::cout << "Program Start" << std::endl;
 
-    int N = 1 << 10;
-    int K = 1 << 10;
-    int M = 1 << 10;
+//     int N = 1 << 10;
+//     int K = 1 << 10;
+//     int M = 1 << 10;
 
-    float *a = (float *)malloc(N * K * sizeof(float));
-    float *b = (float *)malloc(K * M * sizeof(float));
-    float *c = (float *)malloc(N * M * sizeof(float));
+//     float *a = (float *)malloc(N * K * sizeof(float));
+//     float *b = (float *)malloc(K * M * sizeof(float));
+//     float *c = (float *)malloc(N * M * sizeof(float));
 
-    matmul(a, b, c, N, K, M);
+//     matmul(a, b, c, N, K, M);
 
-    std::cout << "Program End" << std::endl;
-}
+//     std::cout << "Program End" << std::endl;
+// }
 
 extern void matmul(
-    float *a,
-    float *b,
-    float *c,
-    int N,
-    int K,
-    int M
+    uint M,
+    uint K,
+    uint N,
+    const float *A,
+    const float *B,
+    float *C
 );
 
 void matrix_multiplication() {
 
     std::cout << "Program Start" << std::endl;
 
-    int N = 1 << 10;
-    int K = 1 << 10;
-    int M = 1 << 10;
+    uint N = 1 << 12;
+    uint K = 1 << 12;
+    uint M = 1 << 12;
 
-    float *a = (float *)malloc(N * K * sizeof(float));
-    float *b = (float *)malloc(K * M * sizeof(float));
-    float *c = (float *)malloc(N * M * sizeof(float));
+    std::cout << "N:" << N << std::endl;
 
-    matmul(a, b, c, N, K, M);
+    const float *A = (const float *)malloc(N * K * sizeof(float));
+    const float *B = (const float *)malloc(K * M * sizeof(float));
+    float *C = (float *)malloc(N * M * sizeof(float));
 
-    free(a);
-    free(b);
-    free(c);
+    matmul(
+        M,
+        K,
+        N,
+        A,
+        B,
+        C
+    );
+
+    free((float *)A);
+    free((float *)B);
+    free(C);
 
     std::cout << "Program End" << std::endl;
 }

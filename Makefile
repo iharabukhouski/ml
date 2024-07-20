@@ -22,18 +22,23 @@
 
 # 	./build/main
 
-all: program
+all: clean program
 
 	./program
 
+clean:
+
+	# [ -f main.o ] && rm main.o
+	# [ -f cuda.o ] && rm cuda.o
+
 program: main.o cuda.o
 
-	clang++ -L/usr/local/cuda-12/lib64 cuda.o main.o -o program -lcudart
+	clang++ -L/usr/local/cuda-12/lib64 cuda.o main.o -o program -lcudart -lcublas
 
-main.o: main.cpp
+main.o: ./src/main.cpp
 
-	clang++ -c main.cpp
+	clang++ -c ./src/main.cpp -o main.o
 
-cuda.o: cuda.cu
+cuda.o: ./src/backend/cuda/matmul/cublas.cu
 
-	nvcc -c cuda.cu
+	nvcc -c ./src/backend/cuda/matmul/cublas.cu -o cuda.o
