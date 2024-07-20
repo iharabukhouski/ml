@@ -32,66 +32,130 @@ void transpose() {
 
 }
 
-__global__ void _matmul(
-    float *a,
-    float *b,
-    float *c,
-    int N,
-    int K,
-    int M
+# define BLOCK_SIZE 32
+
+template<
+    const uint TILESIZE
+>
+__global__ void _matmul2(
+    uint M, // rows of C / rows of A
+    uint K, // columns of A / rows of B
+    uint N, // columns of C / columns of B
+    const float *A,
+    const float *B,
+    float *C
 ) {
 
-    int threads = 16;
-    int tile_size = threads;
+    __shared__ float _A[TILESIZE * TILESIZE];
+    __shared__ float _B[TILESIZE * TILESIZE];
 
-    __shared__ int A[threads * threads * sizeof(float)];
-    __shared__ int B[threads * threads * sizeof(float)];
+    const uint tileY = blockIdx.y;
+    const uint tileX = blockIdx.x;
 
-    int x, m = blockIdx.x * blockDim.x + threadIdx.x;
-    int y, n = blockIdx.y * blockDim.y + threadIdx.y;
+    const uint threadY = threadIdx.y;
+    const uint threadX = threadIdx.x;
 
-    for (int i = 0; i < (N / tile_size); i++) {
+    A += tileY * TILESIZE * K;
+    B += tileX * TILESIZE;
+    C += tileY * TILESIZE * N + tileX * TILESIZE;
 
-        if ((n < N) && (m < M)) {
+    float c_m_n = 0;
 
-            int value = 0;
+    for (uint tileIdx = 0; tileIdx < K; tileIdx += TILESIZE) {
 
-            for (int k = 0; k < K; k++) {
+        _A[threadY * TILESIZE + threadX] = A[threadY * K + threadX];
+        _B[threadY * TILESIZE + threadX] = B[threadY * N + threadX];
 
-                value += a[n * K + k] * b[];
+        __syncthreads();
+
+        A += TILESIZE;
+        B += TILESIZE * N;
+
+        for (uint i = 0; i < alkdj; i++) {
+
+            for (uint elementIdx = 0; elementIdx < TILESIZE; elementIdx++) {
+
+                c_m_n += _A[threadY * TILESIZE + elementIdx] * _B[threadX + TILESIZE * elementIdx];
             }
 
-            c[n * M + m] = value;
         }
+
+        __syncthreads();
     }
+
+    C[threadY * N + threadX] = c_m_n;
 }
 
-void matmul(
-    float *a,
-    float *b,
-    float *c,
-    int N,
-    int K,
-    int M
+template<
+    const uint BM, // block tile
+    const uint BK, // block tile
+    const uint BN, // block tile
+    const uint TM, // thread tile
+    const uint TN, // thread tile
+>
+__global__ void _matmul3(
+    uint M, // rows of C / rows of A
+    uint K, // columns of A / rows of B
+    uint N, // columns of C / columns of B
+    const float *A,
+    const float *B,
+    float *C
 ) {
 
-    dim3 numBlocks(64, 64);
-    dim3 threadsPerBlock(16, 16);
+    __shared__ float _A[BM * BK];
+    __shared__ float _B[BK * BN];
 
-    float* d_a;
-    float* d_b;
-    float* d_c;
+    blockIdx.x;
+    blockIdx.y;
 
-    cudaMalloc(&d_a, N * K * sizeof(float));
-    cudaMalloc(&d_b, K * M * sizeof(float));
-    cudaMalloc(&d_c, N * M * sizeof(float));
+    threadIdx.x;
+    threadIdx.y;
 
-    cudaMemcpy(d_a, a, N * K * sizeof(float), cudaMemcpyHostToDevice);
-    cudaMemcpy(d_b, b, K * M * sizeof(float), cudaMemcpyHostToDevice);
+    for (uint tm = 0; tm < TM; tm++) { // iterate over rows
 
-    _matmul<<<numBlocks, threadsPerBlock>>>(d_a, d_b, d_c, N, K, M);
+        for (uint tn = 0; tn < TN; tn++) { // iterate over columns
 
-    cudaMemcpy(c, d_c, N * M * sizeof(float), cudaMemcpyDeviceToHost)
+            _A[threadIdx.x * TN + tn + threadIdx.y * tm * TM]
+        }
+    }
+
+}
+
+#define CEIL_DIV(M, N) ((M + N - 1) / N)
+
+void matmul(
+    uint M, // rows of C / rows of A
+    uint K, // columns of A / rows of B
+    uint N, // columns of C / columns of B
+    const float *A,
+    const float *B,
+    float *C
+) {
+
+    dim3 gridDim(CEIL_DIV(N, BLOCK_SIZE), CEIL_DIV(M, BLOCK_SIZE), 1);
+    dim3 blockDim(BLOCK_SIZE, BLOCK_SIZE, 1);
+
+    float* d_A;
+    float* d_B;
+    float* d_C;
+
+    cudaMalloc(&d_A, N * K * sizeof(float));
+    cudaMalloc(&d_B, K * M * sizeof(float));
+    cudaMalloc(&d_C, N * M * sizeof(float));
+
+    cudaMemcpy(d_A, A, N * K * sizeof(float), cudaMemcpyHostToDevice);
+    cudaMemcpy(d_B, B, K * M * sizeof(float), cudaMemcpyHostToDevice);
+
+    _matmul<<<gridDim, blockDim>>>(
+        M,
+        K,
+        N,
+        d_A,
+        d_B,
+        d_C
+    );
+
+    cudaMemcpy(C, d_C, N * M * sizeof(float), cudaMemcpyDeviceToHost)
 }
 
 __global__ void _add(
