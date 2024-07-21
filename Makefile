@@ -28,17 +28,22 @@ all: clean program
 
 clean:
 
-	# [ -f main.o ] && rm main.o
-	# [ -f cuda.o ] && rm cuda.o
+	clear
 
-program: main.o cuda.o
+	rm -f cublas.o cuda.o main.o
 
-	clang++ -L/usr/local/cuda-12/lib64 cuda.o main.o -o program -lcudart -lcublas
+program: cublas.o cuda.o main.o 
+
+	clang++ -L/usr/local/cuda-12/lib64 cublas.o cuda.o main.o -o program -lcudart -lcublas
 
 main.o: ./src/main.cpp
 
 	clang++ -c ./src/main.cpp -o main.o
 
-cuda.o: ./src/backend/cuda/matmul/cublas.cu
+cuda.o: ./src/backend/cuda/matmul/naive.cu
 
-	nvcc -c ./src/backend/cuda/matmul/cublas.cu -o cuda.o
+	nvcc -c ./src/backend/cuda/matmul/naive.cu -o cuda.o
+
+cublas.o: ./src/backend/cuda/matmul/cublas.cu
+
+	nvcc -c ./src/backend/cuda/matmul/cublas.cu -o cublas.o

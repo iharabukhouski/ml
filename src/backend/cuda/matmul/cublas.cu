@@ -1,7 +1,7 @@
 #include <iostream>
 #include <cublas_v2.h>
 
-void matmul(
+void matmul_cublas(
     uint M, // rows of C / rows of A
     uint K, // columns of A / rows of B
     uint N, // columns of C / columns of B
@@ -62,7 +62,7 @@ void matmul(
     float milliseconds = 0;
     cudaEventElapsedTime(&milliseconds, start, stop);
 
-    std::cout << "kernel execution time: " << milliseconds << std::endl;
+    std::cout << "cublas kernel execution time: " << milliseconds << std::endl;
 
     cudaEventDestroy(start);
     cudaEventDestroy(stop);
