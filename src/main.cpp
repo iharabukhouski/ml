@@ -3,6 +3,8 @@
 #include <string.h>
 #include <stdio.h>
 
+#include "./backend/cpu/matmul/naive.h"
+
 // extern void add(
 //     float *a,
 //     float *b,
@@ -89,36 +91,40 @@ float random_float_range(float min, float max) {
 
 void matrix_multiplication() {
 
-    std::cout << "Program Start" << random_float_range(-1, 1) << std::endl;
+    std::cout << "Program Start" << std::endl;
 
     // uint M = 1 << 12;
     // uint K = 1 << 12;
     // uint N = 1 << 12;
 
-    uint M = 1 << 7;
-    uint K = 1 << 7;
-    uint N = 1 << 7;
+    uint M = 1 << 12;
+    uint K = 1 << 12;
+    uint N = 1 << 12;
 
     std::cout << "N: " << N << std::endl;
 
     float *A = (float *)malloc(N * K * sizeof(float));
     float *B = (float *)malloc(K * M * sizeof(float));
     float *C_cublas = (float *)malloc(N * M * sizeof(float));
-    float *C_custom = (float *)malloc(N * M * sizeof(float));
+    float *C_custom_cpu = (float *)malloc(N * M * sizeof(float));
+    float *C_custom_cuda = (float *)malloc(N * M * sizeof(float));
 
     for (uint i = 0; i < M * K; i++) {
 
         A[i] = random_float_range(-1, 1);
+        // A[i] = i;
     }
 
     for (uint i = 0; i < K * N; i++) {
 
         B[i] = random_float_range(-1, 1);
+        // B[i] = i;
     }
 
     // setting C to zeros
     memset(C_cublas, 0, N * M * sizeof(float));
-    memset(C_custom, 0, N * M * sizeof(float));
+    memset(C_custom_cpu, 0, N * M * sizeof(float));
+    memset(C_custom_cuda, 0, N * M * sizeof(float));
 
     matmul_cublas(
         M,
@@ -129,20 +135,31 @@ void matrix_multiplication() {
         C_cublas
     );
 
+    // matmul_cpu(
+    //     M,
+    //     K,
+    //     N,
+    //     A,
+    //     B,
+    //     C_custom_cpu
+    // );
+
     matmul(
         M,
         K,
         N,
         A,
         B,
-        C_custom
+        C_custom_cuda
     );
+
+    float acceptable_error = 0.001;
 
     for (uint i = 0; i < M * N; i++) {
 
-        if (C_cublas[i] != C_custom[i]) {
+        if ((C_cublas[i] - C_custom_cuda[i]) > acceptable_error) {
 
-            printf("%.10f %.10f\n", C_cublas[i], C_custom[i]);
+            printf("%.10f %.10f\n", C_cublas[i], C_custom_cuda[i]);
 
             // std::cout << C_cublas[i] << " " << C_custom[i] << std::endl;
             // std::cout << C_cublas[i] - C_cublas[i] << std::endl;
@@ -152,7 +169,8 @@ void matrix_multiplication() {
     free(A);
     free(B);
     free(C_cublas);
-    free(C_custom);
+    free(C_custom_cpu);
+    free(C_custom_cuda);
 
     std::cout << "Program End" << std::endl;
 }

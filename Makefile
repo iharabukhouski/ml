@@ -40,9 +40,9 @@ main.o: ./src/main.cpp
 
 	clang++ -c ./src/main.cpp -o main.o
 
-cuda.o: ./src/backend/cuda/matmul/naive.cu
+cuda.o: ./src/backend/cuda/matmul/smem.cu
 
-	nvcc -c ./src/backend/cuda/matmul/naive.cu -o cuda.o
+	nvcc -c ./src/backend/cuda/matmul/smem.cu -o cuda.o
 
 cublas.o: ./src/backend/cuda/matmul/cublas.cu
 
