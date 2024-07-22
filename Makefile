@@ -30,20 +30,24 @@ clean:
 
 	clear
 
-	rm -f cublas.o cuda.o main.o
+	rm -f cuda.o cublas.o matmul.o main.o
 
-program: cublas.o cuda.o main.o 
+program: cuda.o cublas.o matmul.o main.o 
 
-	clang++ -L/usr/local/cuda-12/lib64 cublas.o cuda.o main.o -o program -lcudart -lcublas
+	clang++ -L/usr/local/cuda-12/lib64 cuda.o cublas.o matmul.o main.o -o program -lcudart -lcublas
 
 main.o: ./src/main.cpp
 
 	clang++ -c ./src/main.cpp -o main.o
 
-cuda.o: ./src/backend/cuda/matmul/smem.cu
+cuda.o: ./src/backend/cuda/cuda.cu
 
-	nvcc -c ./src/backend/cuda/matmul/smem.cu -o cuda.o
-
+	nvcc -c ./src/backend/cuda/cuda.cu -o cuda.o
+	
 cublas.o: ./src/backend/cuda/matmul/cublas.cu
 
 	nvcc -c ./src/backend/cuda/matmul/cublas.cu -o cublas.o
+
+matmul.o: ./src/backend/cuda/matmul/smem.cu
+
+	nvcc -c ./src/backend/cuda/matmul/smem.cu -o matmul.o

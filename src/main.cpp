@@ -67,6 +67,8 @@
 //     std::cout << "Program End" << std::endl;
 // }
 
+extern void info();
+
 extern void matmul_cublas(
     uint M,
     uint K,
@@ -92,6 +94,8 @@ float random_float_range(float min, float max) {
 void matrix_multiplication() {
 
     std::cout << "Program Start" << std::endl;
+
+    info();
 
     // uint M = 1 << 12;
     // uint K = 1 << 12;
