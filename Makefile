@@ -24,7 +24,7 @@
 
 all: clean program
 
-	./program
+	# ./program
 
 clean:
 
@@ -48,6 +48,6 @@ cublas.o: ./src/backend/cuda/matmul/cublas.cu
 
 	nvcc -c ./src/backend/cuda/matmul/cublas.cu -o cublas.o
 
-matmul.o: ./src/backend/cuda/matmul/smem.cu
+matmul.o: ./src/backend/cuda/matmul/reg.cu
 
-	nvcc -c ./src/backend/cuda/matmul/smem.cu -o matmul.o
+	nvcc -c ./src/backend/cuda/matmul/reg.cu -o matmul.o

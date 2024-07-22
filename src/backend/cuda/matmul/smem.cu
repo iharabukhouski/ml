@@ -27,13 +27,6 @@ __global__ void _matmul(
 
     for (uint tileIdx = 0; tileIdx < numTiles; tileIdx++) {
 
-        // printf("tileIdx: %d | globalX: %d | globalY: %d | threadX: %d | threadY: %d\n", tileIdx, globalX, globalY, threadX, threadY);
-
-        // if (globalY == 0 && globalX == 0) {
-
-        //     printf("A: %f | B: %f\n", A[(globalY * K) + (tileIdx * BLOCKSIZE) + threadX], B[globalX + (tileIdx * BLOCKSIZE * N) + (threadY * N)]);
-        // }
-
         _A[threadY * BLOCKSIZE + threadX] = A[(globalY * K) + (tileIdx * BLOCKSIZE) + threadX];
         _B[threadY * BLOCKSIZE + threadX] = B[globalX + (tileIdx * BLOCKSIZE * N) + (threadY * N)];
 

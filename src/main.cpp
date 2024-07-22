@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -87,25 +88,70 @@ extern void matmul(
     float *C
 );
 
-float random_float_range(float min, float max) {
+float rand(
+    float min,
+    float max
+) {
+
     return min + ((float)rand() / (float)RAND_MAX) * (max - min);
 }
 
+void rand(
+    const char *label,
+    uint M,
+    uint N,
+    float *A
+) {
+
+    std::cout << std::endl;
+    std::cout << label << " = [" << std::endl;
+
+    for (uint m = 0; m < M; m++) {
+
+        // std::cout << "  ";
+
+        for (uint n = 0; n < N; n++) {
+
+            uint i = m * N + n;
+
+            A[i] = rand(-1, 1);
+
+            // if (A[i] > 0) {
+
+            //     std::cout << " ";
+            // }
+
+            std::cout << std::setw(12) << A[i] << ", ";
+
+            // if (A[i] )
+        }
+
+        std::cout << std::endl;
+    }
+
+    std::cout << "]" << std::endl;
+}
+
+void zeros(
+    uint M,
+    uint N,
+    float *A
+) {
+
+    memset(A, 0, M * N * sizeof(float));
+}
+
 void matrix_multiplication() {
-
-    std::cout << "Program Start" << std::endl;
-
-    info();
 
     // uint M = 1 << 12;
     // uint K = 1 << 12;
     // uint N = 1 << 12;
 
-    uint M = 1 << 12;
-    uint K = 1 << 12;
-    uint N = 1 << 12;
+    uint M = 1 << 3;
+    uint K = 1 << 3;
+    uint N = 1 << 3;
 
-    std::cout << "N: " << N << std::endl;
+    std::cout << std::endl << "N: " << N << std::endl;
 
     float *A = (float *)malloc(N * K * sizeof(float));
     float *B = (float *)malloc(K * M * sizeof(float));
@@ -113,22 +159,13 @@ void matrix_multiplication() {
     float *C_custom_cpu = (float *)malloc(N * M * sizeof(float));
     float *C_custom_cuda = (float *)malloc(N * M * sizeof(float));
 
-    for (uint i = 0; i < M * K; i++) {
-
-        A[i] = random_float_range(-1, 1);
-        // A[i] = i;
-    }
-
-    for (uint i = 0; i < K * N; i++) {
-
-        B[i] = random_float_range(-1, 1);
-        // B[i] = i;
-    }
+    rand("A", M, K, A);
+    rand("B", K, N, B);
 
     // setting C to zeros
-    memset(C_cublas, 0, N * M * sizeof(float));
-    memset(C_custom_cpu, 0, N * M * sizeof(float));
-    memset(C_custom_cuda, 0, N * M * sizeof(float));
+    zeros(M, N, C_cublas);
+    zeros(M, N, C_custom_cpu);
+    zeros(M, N, C_custom_cuda);
 
     matmul_cublas(
         M,
@@ -157,33 +194,37 @@ void matrix_multiplication() {
         C_custom_cuda
     );
 
-    float acceptable_error = 0.001;
+    // float acceptable_error = 0.001;
 
-    for (uint i = 0; i < M * N; i++) {
+    // for (uint i = 0; i < M * N; i++) {
 
-        if ((C_cublas[i] - C_custom_cuda[i]) > acceptable_error) {
+    //     if ((C_cublas[i] - C_custom_cuda[i]) > acceptable_error) {
 
-            printf("%.10f %.10f\n", C_cublas[i], C_custom_cuda[i]);
+    //         printf("%.10f %.10f\n", C_cublas[i], C_custom_cuda[i]);
 
-            // std::cout << C_cublas[i] << " " << C_custom[i] << std::endl;
-            // std::cout << C_cublas[i] - C_cublas[i] << std::endl;
-        }
-    }
+    //         // std::cout << C_cublas[i] << " " << C_custom[i] << std::endl;
+    //         // std::cout << C_cublas[i] - C_cublas[i] << std::endl;
+    //     }
+    // }
 
     free(A);
     free(B);
     free(C_cublas);
     free(C_custom_cpu);
     free(C_custom_cuda);
-
-    std::cout << "Program End" << std::endl;
 }
 
 int main() {
 
+    std::cout << "Program Start" << std::endl;
+
+    info();
+
     // vector_addition();
     // matrix_transpose();
     matrix_multiplication();
+
+    std::cout << std::endl << "Program End" << std::endl;
 
     return 0;
 }

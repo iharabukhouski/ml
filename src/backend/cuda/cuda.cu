@@ -18,5 +18,4 @@ void info() {
     // printf("Regs Per SM: %d\n", props.regsPerMultiProcessor);
     printf("Num SMs: %d\n", props.multiProcessorCount);
     printf("Shared Mem Per Block: %zu\n", props.sharedMemPerBlock);
-    printf("\n");
 }
