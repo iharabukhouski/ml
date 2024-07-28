@@ -32,7 +32,11 @@ clean:
 
 	rm -f cuda.o cublas.o matmul.o main.o
 
-program: cuda.o cublas.o matmul.o main.o 
+program:
+
+	nvcc -g -G ./src/main.cu -o program
+
+_program: cuda.o cublas.o matmul.o main.o 
 
 	clang++ -L/usr/local/cuda-12/lib64 cuda.o cublas.o matmul.o main.o -o program -lcudart -lcublas
 
