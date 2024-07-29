@@ -1,34 +1,79 @@
-#include "stdio.h"
+#include <stdio.h>
+#include <stdlib.h>
 
-__global__ void my_simple_kernel(int *a) {
+extern void matmul(
+    uint M,
+    uint K,
+    uint N,
+    const float *A,
+    const float *B,
+    float *C
+);
 
-    printf("Start: %d\n");
-    printf("X: %d\n", threadIdx.x);
-    printf("Y: %d\n", threadIdx.y);
-    printf("\n");
+void ones(
+    uint M,
+    uint N,
+    float *A
+) {
 
-    *a = 3;
+    for (uint i = 0; i < M * N; i++) {
+
+        A[i] = 1;
+    }
 }
 
+void zeros(
+    int M,
+    int N,
+    float *A
+) {
+
+    for (int i = 0; i < M * N; i++) {
+
+        A[i] = 0;
+    }
+}
+
+void range(
+    uint M,
+    uint N,
+    float *A
+) {
+
+    for (uint i = 0; i < M * N; i++) {
+
+        A[i] = i + 2;
+    }
+}
 
 int main() {
 
-    printf("Hi\n");
+    printf("Program Start\n");
 
-    int a;
-    int* d_a;
+    uint M = 1 << 2;
+    uint K = 1 << 2;
+    uint N = 1 << 2;
 
-    cudaMalloc(&d_a, sizeof(int));
+    printf("N: %d\n", N);
 
-    dim3 gridDim(1, 1, 1);
-    dim3 blockDim(2, 1, 1);
+    float *A = (float *)malloc(M * K * sizeof(float));
+    float *B = (float *)malloc(K * N * sizeof(float));
+    float *C = (float *)malloc(M * N * sizeof(float));
 
-    my_simple_kernel<<<gridDim, blockDim>>>(d_a);
+    range(M, K, A);
+    range(K, N, B);
+    zeros(M, N, C);
 
-    // cudaMemcpy(y, d_y, sizeof(int), cudaMemcpyDeviceToHost);
-    cudaMemcpy(&a, d_a, sizeof(int), cudaMemcpyDeviceToHost);
+    matmul(
+        M,
+        K,
+        N,
+        A,
+        B,
+        C
+    );
 
-    printf("Result: %d\n", a);
+    printf("Program End\n");
 
     return 0;
 }
